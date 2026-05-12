@@ -5,7 +5,8 @@ from cryptography.hazmat.backends import default_backend
 import ssl, socket, hashlib, json, urllib.request, subprocess, urllib.error, time
 
 def get_ssl_cert_improved(hostname: str, port: int = 443, timeout: float = 5, validate: bool = True):
-    """Возвращает (cert_dict, expires_datetime, issuer_dict, error_msg)"""
+    """Возвращает (cert_dict, expires_datetime, issuer_dict, error_msg)
+       Базовая проверка работоспособности SSl"""
     try:
         ctx = ssl.create_default_context()
         if not validate:
@@ -37,6 +38,7 @@ def check_mitm_via_ct_improved(
     fingerprint = None
     issuer_dict = None
     serial_number = None
+    """Проверка на MITM атаку, используется полноценная проверка SSl, также запросы к crt"""
     try:
         ctx = ssl.create_default_context()
         if not verify_ssl:
@@ -103,6 +105,7 @@ def check_mitm_via_ct_improved(
     return fingerprint, None, f"Не удалось получить ответ после {max_retries} попыток. Последняя ошибка: {last_error}", issuer_dict, False
 
 def check_dns_security():
+    """Проверка работоспособности DNS"""
     result = {'servers': [], 'is_safe': True, 'warnings': []}
     try:
         output = subprocess.check_output(['ipconfig', '/all'], encoding='cp866', errors='ignore')
@@ -147,7 +150,7 @@ def check_dns_security():
             result['is_safe'] = False
     return result
 
-# Демонстрация (только новые функции)
+
 print("Начинаем проверку безопасности Wi-Fi сети")
 print("==========================================")
 
